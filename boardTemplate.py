@@ -57,17 +57,70 @@ class board:
         #code by Tim Day
 
     def getSize(self):
-        "returns the size of the board (as a single number, as it is square)"
+        """returns the size of the board (as a single number, as it is square)"""
         return self.size
         #code by Tim Day
 
-    def moveQueen(self,queenNum,newRow):
+    def validMove(self, y1, x1, y2, x2):
+        """returns True if the move is valid, false otherwise"""
+        output = False
+
+        if(x1 == x2):
+            output = True
+
+        if(y1 == y2):
+            output = True
+
+        if(abs(y2 - y1) == abs(x2 - x1)):
+            output = True
+
+        return output
+        #code by Tim Day
+
+    def squaresMoved(self, y1, x1, y2, x2):
+        """Gets the number of squares moved"""
+        if(self.validMove(y1, x1, y2, x2) == False):
+            print("Invalid move.")
+            return 0        
+
+        if(x1 == x2):
+            return abs(y2 - y1)
+
+        if(y1 == y2):
+            return abs(x2 - x1)
+
+        return abs(x2 - x1);
+        #code by Tim Day
+            
+    def moveQueen(self, y1, x1, y2, x2):
         """moves the queen numbered as queenNum
         (so 0 to size-1 for normal queens, size and up for extra queens), to row newRow, and adds the cost to its internal cost.
         Note that if the queen is already there, it should do nothing, and if it would overlap with another queen,
         it should error (this would only happen if there's an extra queen on the row).
         This changes the board, so if you want to keep the old version, use moveQueenCopy"""
-        #code by 
+        size = self.getSize()
+
+        
+        if(y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0 or y1 >= size or y2 >= size or x1 >= size or x2 >= size):
+            print("Out of bounds.")
+            return
+        
+        if(self.validMove(y1, x1, y2, x2) == False):
+            print("Invalid move.")
+            return
+            
+        if(self.board[y1][x1] == 0):
+            print("No Queen in first position.")
+            return
+            
+        if(self.board[y2][x2] != 0):
+            print("Queen in second position.")
+            return
+
+        self.board[y2][x2] = self.board[y1][x1]
+        self.board[y1][x1] = 0
+        self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2] * self.board[y2][x2])
+        #code by Tim Day
 
     def moveQueenCopy(self,queenNum,newRow):
         "Makes a copy of the board, then moves the queen. Useful if you want to explore a selection of moves"
@@ -110,6 +163,12 @@ class board:
 
 tq = [[0, 3],[1, 9],[2, 3],[3, 9]]
 tqe = [[1, 0, 5]]
-test = board(4,tq,tqe,4)
+test = board(4,tq,tqe,0)
+test.showState()
+print(test.getQueens())
+test.moveQueen(0, 0, 3, 0)
+test.showState()
+print(test.getQueens())
+test.moveQueen(3, 3, 0, 3)
 test.showState()
 print(test.getQueens())
