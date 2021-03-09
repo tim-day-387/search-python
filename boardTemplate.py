@@ -44,15 +44,17 @@ class board:
         print(self.startCost)
         #code by Tim Day
 
-    def getNormQueens(self):
-        """Returns a list of the queens on the board, same format as set state
-        Note that the normal queens start at column zero, not column one"""
-        #code by
-        
-    def getExQueens(self):
-        """returns a list of extra queens, in the same format as extra queens in set state, or None if their are none.
-        Note that each queen here is size+index, so the first extra queen is numbered the size of the board."""
-        #code by
+    def getQueens(self):
+        """Returns a list of the queens on the board, same format as set state"""
+        queens = []
+
+        for i in range(0, self.getSize()):
+            for j in range(0, self.getSize()):
+                if(self.board[i][j] != 0):    
+                    queens.append([i, j, self.board[i][j]])
+
+        return queens
+        #code by Tim Day
 
     def getSize(self):
         "returns the size of the board (as a single number, as it is square)"
@@ -105,9 +107,9 @@ class board:
 
 
 # Test Code
-"""
+
 tq = [[0, 3],[1, 9],[2, 3],[3, 9]]
 tqe = [[1, 0, 5]]
 test = board(4,tq,tqe,4)
 test.showState()
-"""
+print(test.getQueens())
