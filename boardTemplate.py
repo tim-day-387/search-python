@@ -122,12 +122,14 @@ class board:
         self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2] * self.board[y2][x2])
         #code by Tim Day
 
-    def moveQueenCopy(self,queenNum,newRow):
-        "Makes a copy of the board, then moves the queen. Useful if you want to explore a selection of moves"
-        #code by Romaji
+    def moveQueenCopy(self, y1, x1, y2, x2):
+        """Makes a copy of the board, then moves the queen. Useful if you want to explore a selection of moves"""
         ret = self.copy()
-        ret.moveQueen(queenNum,newRow)
+
+        ret.moveQueen(y1, x1, y2, x2)
+
         return ret
+        #code by Romaji, Tim Day
         
     def countPairs(self):
         """returns the number of paired queens on the board, in all directions.
@@ -144,7 +146,8 @@ class board:
 
     def copy(self):
         """returns a copy of the board object"""
-        #code by
+        return self.board
+        #code by Tim Day
 
     def listMoves(self):
         "returns a list of the format (queenNum,newRow), of all legal moves (that do something). Useful for hill climbing."
@@ -160,7 +163,7 @@ class board:
 
 
 # Test Code
-
+"""
 tq = [[0, 3],[1, 9],[2, 3],[3, 9]]
 tqe = [[1, 0, 5]]
 test = board(4,tq,tqe,0)
@@ -172,3 +175,4 @@ print(test.getQueens())
 test.moveQueen(3, 3, 0, 3)
 test.showState()
 print(test.getQueens())
+"""
