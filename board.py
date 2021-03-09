@@ -5,7 +5,7 @@ class board:
     Includes the cost of the board, both as it is, and with the moves up to this point
     Template by Romaji."""
     #please do this one first, to establish the format it's saved in (probably the same as the "queens" and "extraQueens" formats?)
-    def __init__(self,size,queens,extraQueens,startCost):
+    def __init__(self,size,queens,extraQueens=None,startCost=0):
         """size is the size of the board, as a single number (since they are square)
         queens is a array of the main queen for each column, in the format (row,weight)
         extra queens is a array of any additional queens, in the format (coll,row,weight)
@@ -24,7 +24,7 @@ class board:
         self.size = size
         #code by Tim Day
 
-    def showState(self):
+    def showState(self,width=1):
         """prints the board state out, in a way like
         Board:
         +-+-+-+-+
@@ -36,13 +36,24 @@ class board:
         +-+-+-+-+
         | | |3| |
         +-+-+-+-+
-        Cost: [cost number goes here]"""
+        Cost: [cost number goes here]
+        "width" determines how many spaces per digit"""
 
-        print("Board:")        
-        print(self.board)
-        print("Cost:")
-        print(self.startCost)
-        #code by Tim Day
+        print("Board:")
+        token ="+"+width*"-"
+        for i in range(self.size):
+            print(self.size*token+"+")
+            print("|",end="")
+            for j in range(self.size):
+                if self.board[i][j]!=0:
+                    print(str(self.board[i][j]).rjust(width),end="|")
+                else:
+                    print(" "*width,end="|")
+            print()
+        print(self.size*token+"+")
+        #print(self.board) #replaced by proper board formatting.
+        print("Cost:",self.getCost())
+        #code by Tim Day, romaji
 
     def getQueens(self):
         """Returns a list of the queens on the board, same format as set state"""
@@ -61,7 +72,7 @@ class board:
         return self.size
         #code by Tim Day
 
-    def validMove(self, y1, x1, y2, x2):
+    def validMove(self, y1, x1, y2, x2): #wait, what? I thought we'd only look at vertical moves.
         """returns True if the move is valid, false otherwise"""
         output = False
 
@@ -146,11 +157,14 @@ class board:
 
     def copy(self):
         """returns a copy of the board object"""
-        return self.board
-        #code by Tim Day
+        ret=board(self.size,[(0,0)]*self.size) #makes a blank board of the correct sizr
+        ret.board=self.board
+        ret.startCost=self.startCost
+        return ret
+        #code by Tim Day, Romaji
 
     def listMoves(self):
-        "returns a list of the format (queenNum,newRow), of all legal moves (that do something). Useful for hill climbing."
+        "returns a list of the format (queenX,queenY,newY), of all legal VERTICAL moves (that do something). Useful for hill climbing."
         #code by
         
     def autoAdjust(self,other):
