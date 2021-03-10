@@ -129,7 +129,7 @@ class board:
         self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2]**2)
         #code by Tim Day, Romaji.
 
-    def moveQueenCopy(self, y1, x1, y2, x2):
+    def moveQueenCopy(self, y1, x1, y2, x2=None):
         """Makes a copy of the board, then moves the queen. Useful if you want to explore a selection of moves"""
         ret = self.copy()
 
