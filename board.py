@@ -1,4 +1,6 @@
 import numpy as np
+class moveException (Exception):
+    pass
 
 class board:
     """contains a board with weighted queens on it.
@@ -113,25 +115,21 @@ class board:
 
         
         if(y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0 or y1 >= size or y2 >= size or x1 >= size or x2 >= size):
-            print("Out of bounds.")
-            return
+            raise moveException("Out of bounds.")
         
         if(self.validMove(y1, x1, y2, x2) == False):
-            print("Invalid move.")
-            return
+            raise moveException("Invalid move.")
             
         if(self.board[y1][x1] == 0):
-            print("No Queen in first position.")
-            return
+            raise moveException("No Queen in first position.")
             
         if(self.board[y2][x2] != 0):
-            print("Queen in second position.")
-            return
+            raise moveException("Queen in second position.")
 
         self.board[y2][x2] = self.board[y1][x1]
         self.board[y1][x1] = 0
         self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2] * self.board[y2][x2])
-        #code by Tim Day
+        #code by Tim Day, Romaji.
 
     def moveQueenCopy(self, y1, x1, y2, x2):
         """Makes a copy of the board, then moves the queen. Useful if you want to explore a selection of moves"""
