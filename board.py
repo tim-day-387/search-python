@@ -4,7 +4,7 @@ class moveException (Exception):
 
 class board:
     """contains a board with weighted queens on it.
-    Includes the cost of the board, both as it is, and with the moves up to this point
+    Includes the cost of the board, both as it is, and with the moves up to this point. Note y is first.
     Template by Romaji."""
     #please do this one first, to establish the format it's saved in (probably the same as the "queens" and "extraQueens" formats?)
     def __init__(self,size,queens,extraQueens=None,startCost=0):
@@ -93,8 +93,7 @@ class board:
     def squaresMoved(self, y1, x1, y2, x2):
         """Gets the number of squares moved"""
         if(self.validMove(y1, x1, y2, x2) == False):
-            print("Invalid move.")
-            return 0        
+            raise moveException("Invalid move.")     
 
         if(x1 == x2):
             return abs(y2 - y1)
@@ -106,8 +105,7 @@ class board:
         #code by Tim Day
             
     def moveQueen(self, y1, x1, y2, x2):
-        """moves the queen numbered as queenNum
-        (so 0 to size-1 for normal queens, size and up for extra queens), to row newRow, and adds the cost to its internal cost.
+        """moves the queen at y1,x1, to y2, x2. Note that Y is first!
         Note that if the queen is already there, it should do nothing, and if it would overlap with another queen,
         it should error (this would only happen if there's an extra queen on the row).
         This changes the board, so if you want to keep the old version, use moveQueenCopy"""
@@ -128,7 +126,7 @@ class board:
 
         self.board[y2][x2] = self.board[y1][x1]
         self.board[y1][x1] = 0
-        self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2] * self.board[y2][x2])
+        self.startCost = self.startCost + (self.squaresMoved(y1, x1, y2, x2) * self.board[y2][x2]**2)
         #code by Tim Day, Romaji.
 
     def moveQueenCopy(self, y1, x1, y2, x2):
@@ -151,18 +149,22 @@ class board:
         """Returns the cost of the board, which is the cost from moves plus 100*[the number of pairs]
         If includePairs is set to False, does not include the cost from paired queens, useful for getting just the cost of movement.
         """
-        #code by
+        #code by Romaji
+        ret=self.startCost
+        if includePairs:
+            ret+=100*self.countPairs()
+        return ret
 
     def copy(self):
         """returns a copy of the board object"""
-        ret=board(self.size,[(0,0)]*self.size) #makes a blank board of the correct sizr
+        ret=board(self.size,[(0,0)]*self.size) #makes a blank board of the correct size
         ret.board=self.board
         ret.startCost=self.startCost
         return ret
         #code by Tim Day, Romaji
 
     def listMoves(self):
-        "returns a list of the format (queenX,queenY,newY), of all legal VERTICAL moves (that do something). Useful for hill climbing."
+        "returns a list of the format (queenY,queenX,newY), of all legal VERTICAL moves (that do something). Useful for hill climbing."
         #code by
         
     def autoAdjust(self,other):
@@ -178,7 +180,7 @@ class board:
 """
 tq = [[0, 3],[1, 9],[2, 3],[3, 9]]
 tqe = [[1, 0, 5]]
-test = board(4,tq,tqe,0)
+test = board(4,tq,extraQueens=tqe,startCost=0)
 test.showState()
 print(test.getQueens())
 test.moveQueen(0, 0, 3, 0)
