@@ -106,8 +106,7 @@ class board:
             
     def moveQueen(self, y1, x1, y2, x2):
         """moves the queen at y1,x1, to y2, x2. Note that Y is first!
-        Note that if the queen is already there, it should do nothing, and if it would overlap with another queen,
-        it should error (this would only happen if there's an extra queen on the row).
+        Note that if the queen is already there, it will error, same as if it would overlap with another queen.
         This changes the board, so if you want to keep the old version, use moveQueenCopy"""
         size = self.getSize()
 
