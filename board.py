@@ -1,4 +1,6 @@
 import numpy as np
+import random as RNG
+
 class moveException (Exception):
     pass
 
@@ -14,8 +16,9 @@ class board:
         start cost is how much comes from prior moves"""
         board = np.zeros((size, size))
 
-        for i in range(0, size):
-            board[i][queens[i][0]] = queens[i][1]
+        if(queens != None):
+            for i in range(0, size):
+                board[queens[i][0]][i] = queens[i][1]
 
         if(extraQueens != None):
             for i in range(0, len(extraQueens)):
@@ -26,7 +29,29 @@ class board:
         self.size = size
         #code by Tim Day
 
-    def showState(self,width=1):
+    @classmethod
+    def empty(cls,size):
+        """Creates an empty board
+        Example: test = board.empty(7)"""
+        return cls(size, None, None, 0)
+        #code by Tim Day
+
+    @classmethod
+    def regularQueens(cls,size):
+        queens = []
+        """Creates a board with 1 queen per column
+        Example: test = board.regularQueens(4)"""        
+        for i in range(0, size):
+            queens.append([RNG.randint(0,size-1), RNG.randint(1,9)])
+            
+        return cls(size, queens, None, 0)
+        #code by Tim Day
+
+    @classmethod
+    def heavyQueens(cls,size):
+        return
+        
+    def showState(self):
         """prints the board state out, in a way like
         Board:
         +-+-+-+-+
@@ -39,8 +64,15 @@ class board:
         | | |3| |
         +-+-+-+-+
         Cost: [cost number goes here]
-        "width" determines how many spaces per digit"""
+        The width is now calculated automatically"""
 
+        width = 0
+        
+        for i in range(self.size):
+            for j in range(self.size):
+                if(len(str(self.board[i][j])) > width):
+                    width = len(str(self.board[i][j]))
+        
         print("Board:")
         token ="+"+width*"-"
         for i in range(self.size):
@@ -143,17 +175,18 @@ class board:
         It does not multiply this value by 100, and does not take into account the moves to get there.
         this is what a class using this one would do.
         Vertical matchings can be computed by just adding the number of extra queens."""
-        #code by
+        return 0
+        #code by Tim Day
 
     def getCost(self,includePairs=True):
         """Returns the cost of the board, which is the cost from moves plus 100*[the number of pairs]
         If includePairs is set to False, does not include the cost from paired queens, useful for getting just the cost of movement.
         """
-        #code by Romaji
         ret=self.startCost
         if includePairs:
             ret+=100*self.countPairs()
         return ret
+        #code by Romaji
 
     def copy(self):
         """returns a copy of the board object"""
@@ -177,16 +210,7 @@ class board:
 
 
 # Test Code
-"""
-tq = [[0, 3],[1, 9],[2, 3],[3, 9]]
-tqe = [[1, 0, 5]]
-test = board(4,tq,extraQueens=tqe,startCost=0)
+test = board.empty(7)
 test.showState()
-print(test.getQueens())
-test.moveQueen(0, 0, 3, 0)
+test = board.regularQueens(9)
 test.showState()
-print(test.getQueens())
-test.moveQueen(3, 3, 0, 3)
-test.showState()
-print(test.getQueens())
-"""
