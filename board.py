@@ -9,7 +9,7 @@ class board:
     Includes the cost of the board, both as it is, and with the moves up to this point. Note y is first.
     Template by Romaji."""
     #please do this one first, to establish the format it's saved in (probably the same as the "queens" and "extraQueens" formats?)
-    def __init__(self,size,queens,extraQueens=None,startCost=0):
+    def __init__(self,size,queens,extraQueens,startCost=0):
         """size is the size of the board, as a single number (since they are square)
         queens is a array of the main queen for each column, in the format (row,weight)
         extra queens is a array of any additional queens, in the format (coll,row,weight)
@@ -22,7 +22,7 @@ class board:
 
         if(extraQueens != None):
             for i in range(0, len(extraQueens)):
-                board[extraQueens[i][0]][extraQueens[i][1]] = extraQueens[i][2]
+                board[extraQueens[i][1]][extraQueens[i][0]] = extraQueens[i][2]
 
         self.board = board
         self.startCost = startCost
@@ -38,9 +38,10 @@ class board:
 
     @classmethod
     def regularQueens(cls,size):
-        queens = []
         """Creates a board with 1 queen per column
         Example: test = board.regularQueens(4)"""        
+        queens = []
+
         for i in range(0, size):
             queens.append([RNG.randint(0,size-1), RNG.randint(1,9)])
             
@@ -48,8 +49,31 @@ class board:
         #code by Tim Day
 
     @classmethod
-    def heavyQueens(cls,size):
-        return
+    def extraQueens(cls,size):
+        """Creates a board with 1 queen per column with an addition 'size' # of queens
+        All queens have weight of one
+        Example: test = board.heavyQueens(4)"""        
+        queens = []
+        extraQueens = []
+        extra = 0
+        seen = {}
+
+        for i in range(0, size):
+            y = RNG.randint(0,size-1)
+            queens.append([y, 1])
+            seen[(i,y)] = 1
+            
+        while extra < size:
+            x = RNG.randint(0,size-1)
+            y = RNG.randint(0,size-1)
+
+            if(not((x,y) in seen)):
+                extraQueens.append([x, y, 1])
+                extra = extra + 1
+                seen[(x,y)] = 1
+
+        return cls(size, queens, extraQueens, 0)
+        #code by Tim Day
         
     def showState(self):
         """prints the board state out, in a way like
@@ -210,7 +234,11 @@ class board:
 
 
 # Test Code
+"""
 test = board.empty(7)
 test.showState()
 test = board.regularQueens(9)
 test.showState()
+test = board.extraQueens(4)
+test.showState()
+"""
