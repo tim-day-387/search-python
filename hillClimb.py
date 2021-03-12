@@ -37,10 +37,8 @@ restartShuffle=int(input("how many random moves to make for a restart?"))
 restarts=int(input("how many restarts?"))
 
 print("generating board...")
-
-# put code here that makes startBoard a 8 by 8 random board with 9 queens
-# and also a start cost of zero, assigned using RNG as seeded above.
-startBoard.showState(width=2) #assuming the biggest possible is 2 digits.
+startBoard = board.extraQueens(8) #Can add an option for changing the max weight if wanted.
+startBoard.showState() #assuming the biggest possible is 2 digits.
 
 bestBoard=startBoard
 bestCost=startBoard.getCost()
@@ -119,7 +117,7 @@ for restart in range(restart):
         tillUpdate-=1
         if tillUpdate==0: #waits until it's decreased to 0, but if starts at 0,
             #will never run
-            thisBoard.showState(width=2)
+            thisBoard.showState()
             print("moves:",len(moveList),"restart:",restart+1)
             tillUpdate=updates
     #now, we're done with the hill climbing loop, time to check if it's the best
@@ -131,7 +129,7 @@ for restart in range(restart):
         restartOfBestBoard=restart
     #otherwise, just procede without recording.
 #finally, print the stuff.
-bestBoard.showState(width=2)
+bestBoard.showState()
 print("Moves")
 print(*movesToBestBoard,sep="\n") #split each one across a line
 print("Restart number:",restartOfBestBoard)
