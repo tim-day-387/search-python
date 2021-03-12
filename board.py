@@ -197,11 +197,22 @@ class board:
         
     def countPairs(self):
         """returns the number of paired queens on the board, in all directions.
-        It does not multiply this value by 100, and does not take into account the moves to get there.
-        this is what a class using this one would do.
-        Vertical matchings can be computed by just adding the number of extra queens."""
-        return 0 #TODO! Actually implement!
-        #code by Tim Day
+        It does not multiply this value by 100, and does not take into account the moves to get there. For that, use getCost()"""
+        ret=0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.board[i][j]==0:
+                    continue #don't do anything if this is blank.
+                for k in range(1,self.size): #note, only checks for queens "further away", as closer queens have already been checked. also don't check self.
+                    if i+k < self.size:
+                        if self.board[i+k][j]!=0:
+                            ret+=1
+                        if j+k <self.size and self.board[i+k][j+k]!=0: #shortcut if means that this shouldn't index error
+                            ret+=1
+                   if j+k < self.size and self.board[i][j+k]!=0:
+                        ret+=1
+        return ret
+        #code by Romaji
 
     def getCost(self,includePairs=True):
         """Returns the cost of the board, which is the cost from moves plus 100*[the number of pairs]
@@ -223,15 +234,67 @@ class board:
 
     def listMoves(self):
         "returns a list of the format (queenY,queenX,newY), of all legal VERTICAL moves (that do something). Useful for hill climbing."
-        #code by
+        queens=self.getQueens()
+        ret=[]
+        for queen in queens:
+            for i in range(self.size):
+                if self.board[i][queen[1]]==0:
+                    ret.append((queen[0],queen[1],i))
+        return ret
+        #code by Romaji
         
     def autoAdjust(self,other):
         """if possible, will make the minimum cost moves from itself to reach "other".
-        should throw an exception if: Board sizes are different, number of queens are different, or weight of queens are different.
+        should raise an exception if: Board sizes are different, number of queens are different, or weight of queens are different.
         Remember that if a queen and an extra queen need to swap places, this is three moves: move lighter queen one space (closer 
         if possible), move heavier queen to spot, move lighter queen to the other spot.
         Useful for genetic algorithms."""
-        #code by
+        if other.size != self.size:
+            raise ValueError("Don't match in size!")
+        newQueens=other.getQueens()
+        oldQueens=self.getQueens()
+        if len(newQueens) != len(oldQueens):
+            raise ValueError("Not the same number of queens!")
+        newQueens.sort(key=lambda queen: self.size*(256*queen[1]+queen[2])+queen[0]) #sort by the x first, weight second, then Y assuming weight is less than 256
+        oldQueens.sort(key=lambda queen: self.size*(256*queen[1]+queen[2])+queen[0])
+        #now try to move each old queen to the new queen place
+        problemMoves=[] #if a queen needs to go where another is, save them for later.
+        for i in range(len(oldQueens)):
+            if newQueens[i][1] != oldQueens[i][1]: #ensure the X match
+                raise ValueError("At least one queen is in the wrong column!")
+            if newQueens[i][2] != oldQueens[i][2]: #ensure the weights match.
+                raise ValueError("At least one queen has the wrong weight!")
+            if self.board[newQueens[i][0]][newQueens[i][1]]!=0:
+                problemMoves.append((oldQueens[i],newQueens[i])) #save it for later.
+            #otherwise, move the old to new.
+            self.moveQueen(oldQueens[0],oldQueens[1],newQueens[0])
+        if len(problemMoves) !=0: #if there are any problem moves, sort them now.
+            problemMoves.sort(key=lambda move: 256*move[0][1]+move[0][2]) #sort by the X, and lower weight moves first.
+            while len(problemMoves)>0:
+                move=problemMoves.pop(0)
+                old=move[0]
+                new=move[1]
+                #check if can just be made now
+                if self.board[new[0]][new[1]]==0:
+                    self.moveQueen(old[0],old[1],new[0])
+                else:
+                    if new[0]<old[0]: #try to move in the direction of the target
+                        sign=-1
+                    else:
+                        sign=1
+                    tempY=old[0]+sign
+                    if tempY<0 or tempY>=self.size: #if it's out of range, fix this now!
+                        sign*=-1 #clearly can't move in that direction
+                        tempY+=2*sign #go the other direction
+                    while self.board[tempY][old[1]]!=0: #does tempY work? If not, fix it.
+                        tempY+=sign
+                        if tempY<0 or tempY>=self.size: #if it's out of range, fix this now!
+                            sign*=-1 #clearly can't move in that direction
+                            tempY=old[0]+sign #start moving in the other direction
+                    #then move to the temporary place
+                    self.moveQueen(old[0],old[1],tempY)
+                    problemMoves.append(((old[0],tempY,old[2]),new))#now, remember to finish the move.
+        #code by Romaji
 
 
 # Test Code
