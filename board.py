@@ -209,7 +209,7 @@ class board:
                             ret+=1
                         if j+k <self.size and self.board[i+k][j+k]!=0: #shortcut if means that this shouldn't index error
                             ret+=1
-                   if j+k < self.size and self.board[i][j+k]!=0:
+                    if j+k < self.size and self.board[i][j+k]!=0:
                         ret+=1
         return ret
         #code by Romaji
