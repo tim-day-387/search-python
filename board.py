@@ -37,21 +37,22 @@ class board:
         #code by Tim Day
 
     @classmethod
-    def regularQueens(cls,size):
+    def regularQueens(cls,size,maxWeight=9):
         """Creates a board with 1 queen per column
+        All queens have weight between 1 and maxWeight
         Example: test = board.regularQueens(4)"""        
         queens = []
 
         for i in range(0, size):
-            queens.append([RNG.randint(0,size-1), RNG.randint(1,9)])
+            queens.append([RNG.randint(0,size-1), RNG.randint(1,maxWeight)])
             
         return cls(size, queens, None, 0)
         #code by Tim Day
 
     @classmethod
-    def extraQueens(cls,size):
+    def extraQueens(cls,size,maxWeight=9):
         """Creates a board with 1 queen per column with an addition 'size' # of queens
-        All queens have weight of one
+        All queens have weight between 1 and maxWeight
         Example: test = board.heavyQueens(4)"""        
         queens = []
         extraQueens = []
@@ -60,7 +61,7 @@ class board:
 
         for i in range(0, size):
             y = RNG.randint(0,size-1)
-            queens.append([y, 1])
+            queens.append([y, RNG.randint(1,maxWeight)])
             seen[(i,y)] = 1
             
         while extra < size:
@@ -68,7 +69,7 @@ class board:
             y = RNG.randint(0,size-1)
 
             if(not((x,y) in seen)):
-                extraQueens.append([x, y, 1])
+                extraQueens.append([x, y, RNG.randint(1,maxWeight)])
                 extra = extra + 1
                 seen[(x,y)] = 1
 
@@ -199,7 +200,7 @@ class board:
         It does not multiply this value by 100, and does not take into account the moves to get there.
         this is what a class using this one would do.
         Vertical matchings can be computed by just adding the number of extra queens."""
-        return 0
+        return 0 #TODO! Actually implement!
         #code by Tim Day
 
     def getCost(self,includePairs=True):
