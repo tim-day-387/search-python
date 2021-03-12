@@ -231,7 +231,7 @@ class board:
         ret.startCost=self.startCost
         return ret
         #code by Tim Day, Romaji
-
+        
     def listMoves(self):
         "returns a list of the format (queenY,queenX,newY), of all legal VERTICAL moves (that do something). Useful for hill climbing."
         queens=self.getQueens()
