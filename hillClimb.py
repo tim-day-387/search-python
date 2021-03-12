@@ -45,7 +45,7 @@ bestCost=startBoard.getCost()
 movesToBestBoard=[]
 restartOfBestBoard=-1
 
-for restart in range(restart):
+for restart in range(restarts):
     thisBoard=startBoard.copy()
     moveList=[]
     
