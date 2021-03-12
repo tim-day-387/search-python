@@ -79,12 +79,12 @@ while generations: #this kind of thing would be a function if I was coding clean
         generations=True
         continue
     
-    if generation <=0:
+    if generations <=0:
         print("Must be positive")
         generations=True
         continue
 
-    if generation < 30:
+    if generations < 30:
         q=input("are you sure you want it to be that low? hit y to procede:")
         if q!="y":
             generations=True
@@ -149,7 +149,7 @@ while generation <= generations:
     kids=parents[:preserve] #keep the top however many
     #culling step
     parents=parents[:-1*cull]
-    while len(kids) < generationSize:
+    while len(kids) < populationSize:
         parentIndex1= int((RNG.uniform(1,(len(parents))**2))**0.5)-1 #biases more to lower ranked parents. Cannot be the last parent
         parentIndex2= int((RNG.uniform((parentIndex1+1)**2,(len(parents)+1)**2))**0.5)-1 #can be the last parent. Higher than par1
         #get the parents
