@@ -12,7 +12,7 @@ else:
 
 sideways=int(input("How many sideways moves?")) 
 updates=True
-while updates:
+while updates==True:
     updates=int(input("How many moves before updating (or 0 to hide all work)?"))
     if updates == 0:
         q=input("No updates? Type n to cancel, anything else to procede.")
