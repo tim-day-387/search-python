@@ -14,7 +14,7 @@ else:
 
 sideways=int(input("How many sideways moves?")) 
 updates=True
-while updates:
+while updates==True:
     updates=int(input("How many moves before updating (or 0 to hide all work)?"))
     if updates == 0:
         q=input("No updates? Type n to cancel, anything else to procede.")
@@ -38,7 +38,7 @@ restartShuffle=int(input("how many random moves to make for a restart?"))
 #don't do the same thing. Should not be more than 9, as each queen is moved once.
 #restarts=int(input("how many restarts?"))
 allowedTime=True
-while allowedTime:
+while allowedTime==True:
     try:
         allowedTime=float(input("how many SECONDS will you allow this to run for?"))
     except ValueError:
