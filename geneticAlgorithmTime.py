@@ -91,7 +91,7 @@ Picks collumns at random for mutation"""
 ##        if q!="y":
 ##            generations=True
 allowedTime=True
-while allowedTime:
+while allowedTime==True:
     try:
         allowedTime=float(input("how many SECONDS will you allow this to run for?"))
     except ValueError:
@@ -105,7 +105,7 @@ while allowedTime:
 
 
 populationSize=True
-while populationSize:
+while populationSize==True:
     try:
         populationSize=int(input("How many population members?"))
     except ValueError:
