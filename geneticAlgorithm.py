@@ -71,7 +71,7 @@ Picks collumns at random for mutation"""
     return (ret1,ret2)
 
 generations=True
-while generations: #this kind of thing would be a function if I was coding cleaner
+while generations==True: #this kind of thing would be a function if I was coding cleaner
     try:
         generations=int(input("How many generations before asking to continue?"))
     except ValueError:
@@ -90,7 +90,7 @@ while generations: #this kind of thing would be a function if I was coding clean
             generations=True
 
 populationSize=True
-while populationSize:
+while populationSize==True:
     try:
         populationSize=int(input("How many population members?"))
     except ValueError:
