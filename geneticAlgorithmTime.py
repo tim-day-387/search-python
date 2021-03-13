@@ -103,6 +103,25 @@ while allowedTime==True:
         allowedTime=True
         continue
 
+timeTillUpdate=True
+while timeTillUpdate==True:
+    try:
+        timeTillUpdate=float(input("how many SECONDS will you wait for an update?"))
+    except ValueError:
+        print("try again with a positive number")
+        timeTillUpdate=True
+        continue
+    if timeTillUpdate <=0:
+        print("must be a positive value")
+        timeTillUpdate=True
+        continue
+    if timeTillUpdate >= allowedTime:
+        q=input("Doing this will give no updates. Are you sure? (y for yes)")
+        if q=="y":
+            timeTillUpdate=2*allowedTime #ensure that it can't do it by accident.
+        else:
+            print("Please input a time less than", allowedTime)
+            timeTillUpdate=True
 
 populationSize=True
 while populationSize==True:
@@ -160,6 +179,7 @@ print("best so far")
 parents[0].showState()
 
 generation=1
+timeOfLastUpdate=time.process_time()
 endAfter=time.process_time()+allowedTime #marks the point when this should stop, by taking the process clock
 #before the loop, and adding the number of seconds allowed
 bestOf=[parents[0]] #saves the best of each generation for later display
@@ -167,7 +187,7 @@ while time.process_time() < endAfter: #has the clock hit the ending yet?
     kids=parents[:preserve] #keep the top however many
     #culling step
     parents=parents[:-1*cull]
-    while len(kids) < populationSize:
+    while len(kids) < populationSize and time.process_time() < endAfter: #makes sure to break out if spent too much time
         parentIndex1= int((RNG.uniform(1,(len(parents))**2))**0.5)-1 #biases more to lower ranked parents. Cannot be the last parent
         parentIndex2= int((RNG.uniform((parentIndex1+1)**2,(len(parents)+1)**2))**0.5)-1 #can be the last parent. Higher than par1
         #get the parents
@@ -184,6 +204,11 @@ while time.process_time() < endAfter: #has the clock hit the ending yet?
 ##    print("generation",generation,"best result")
 ##    kids[0].showState()
     bestOf.append(kids[0])
+    #see if update is needed.
+    if time.process_time()>=timeOfLastUpdate+timeTillUpdate:
+            timeOfLastUpdate=time.process_time() #save time now, before the screen draw
+            print("generation:",generation,"time remaining:",endAfter-timeOfLastUpdate)
+            bestOf[-1].showState()
     #move to next generation
     parents=kids
     generation+=1
