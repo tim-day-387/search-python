@@ -42,7 +42,7 @@ Offspring 1 uses mutations 1, offspring 2 uses mutations 2
 
 Picks collumns at random for mutation"""
     division=[False] #list for which offspring gets which column. First offspring always gets first colum.
-    allFalse=True #make sure there's at least one false.
+    allFalse=True #make sure there's at least one true.
     for i in range(7):
         temp=(RNG.random()>0.5)
         if temp==True:
