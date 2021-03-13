@@ -14,32 +14,32 @@ else:
     RNG.seed(seed)
 
 sideways=int(input("How many sideways moves?")) 
-updates=True
-while updates:
-    updates=int(input("How many moves before updating (or 0 to hide all work)?"))
-    if updates == 0:
-        q=input("No updates? Type n to cancel, anything else to procede.")
-        if q=="n":
-            updates=True
-        else:
-            print("continuing in silent mode...")
-            
-    elif updates < 0:
-        print("bad value! Retry.")
-        updates=True
-    elif updates < 100:
-        print("Warning, setting this too low can cause slowdown due to printing.")
-        q=input("are you sure you want to get updates that often? (y to confirm)")
-        if q!="y":
-            print("Try again, then.")
-            updates=True
+##updates=True
+##while updates:
+##    updates=int(input("How many moves before updating (or 0 to hide all work)?"))
+##    if updates == 0:
+##        q=input("No updates? Type n to cancel, anything else to procede.")
+##        if q=="n":
+##            updates=True
+##        else:
+##            print("continuing in silent mode...")
+##            
+##    elif updates < 0:
+##        print("bad value! Retry.")
+##        updates=True
+##    elif updates < 100:
+##        print("Warning, setting this too low can cause slowdown due to printing.")
+##        q=input("are you sure you want to get updates that often? (y to confirm)")
+##        if q!="y":
+##            print("Try again, then.")
+##            updates=True
 
 restartShuffle=int(input("how many random moves to make for a restart?"))
 #this determines how many moves are made at a random restart to ensure they
 #don't do the same thing. Should not be more than 9, as each queen is moved once.
 #restarts=int(input("how many restarts?"))
 allowedTime=True
-while allowedTime:
+while allowedTime==True:
     try:
         allowedTime=float(input("how many SECONDS will you allow this to run for?"))
     except ValueError:
@@ -51,6 +51,26 @@ while allowedTime:
         allowedTime=True
         continue
 
+timeTillUpdate=True
+while timeTillUpdate==True:
+    try:
+        timeTillUpdate=float(input("how many SECONDS will you wait for an update?"))
+    except ValueError:
+        print("try again with a positive number")
+        timeTillUpdate=True
+        continue
+    if timeTillUpdate <=0:
+        print("must be a positive value")
+        timeTillUpdate=True
+        continue
+    if timeTillUpdate >= allowedTime:
+        q=input("Doing this will give no updates. Are you sure? (y for yes)")
+        if q=="y":
+            timeTillUpdate=2*allowedTime #ensure that it can't do it by accident.
+        else:
+            print("Please input a time less than", allowedTime)
+            timeTillUpdate=True
+            
 print("generating board...")
 startBoard = board.extraQueens(8) #Can add an option for changing the max weight if wanted.
 startBoard.showState() #assuming the biggest possible is 2 digits.
@@ -61,6 +81,7 @@ bestCost=startBoard.getCost()
 restartOfBestBoard=-1
 timeElapsedWhenFound=0.0
 
+timeOfLastUpdate=time.process_time()
 endAfter=time.process_time()+allowedTime
 
 while time.process_time() < endAfter:
@@ -97,10 +118,9 @@ while time.process_time() < endAfter:
             usedSet.add(choice) #save that this queen has been moved.
 
     sidewaysRemaining=sideways
-    tillUpdate=updates
     
-    while True: #the break out condition is later. Possible make option for finite?
-        #otherwise, get our next possible moves, and go through them.
+    while time.process_time() < endAfter: #Should end before the process time, but just in case
+        #get our next possible moves, and go through them.
         possibleNext=thisBoard.listMoves()
         costToBeat=thisBoard.getCost() #look for moves the same or better.
         bestMoves=[] #list of moves found as good as costToBeat.
@@ -135,12 +155,12 @@ while time.process_time() < endAfter:
         thisBoard=startBoard.copy()
         thisBoard.autoAdjust(newBoard)
 
-        tillUpdate-=1
-        if tillUpdate==0: #waits until it's decreased to 0, but if starts at 0,
-            #will never run
+        if time.process_time()>=timeOfLastUpdate+timeTillUpdate:
+            timeOfLastUpdate=time.process_time() #save time now, before the screen draw
             thisBoard.showState()
-            print("moves:",len(moveList),"restart:",restart+1)
-            tillUpdate=updates
+            print("moves:",len(moveList),"restart:",restart+1, 
+                  "time remaining:",endAfter-timeOfLastUpdate) #might be negative on the last loop.
+            
     #now, we're done with the hill climbing loop, time to check if it's the best
     if thisBoard.getCost() < bestCost:
         #note, if the cost isn't better, don't save it.
