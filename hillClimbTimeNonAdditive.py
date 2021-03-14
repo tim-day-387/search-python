@@ -1,4 +1,5 @@
 from board import board, moveException
+import time
 import random as RNG
 #code by Romaji.
 #god this is kinda a mess.
