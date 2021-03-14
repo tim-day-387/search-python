@@ -267,6 +267,7 @@ class board:
             if newQueens[i][2] != oldQueens[i][2]: #ensure the weights match.
                 raise ValueError("At least one queen has the wrong weight!")
             if newQueens[i][0] == oldQueens[i][0]: #if they're in the same place
+                #print(newQueens[i],oldQueens[i]) #debug
                 continue #ignore it
             try:
                 self.moveQueen(oldQueens[i][0],oldQueens[i][1],newQueens[i][0])
@@ -302,6 +303,9 @@ class board:
                     #then move to the temporary place
                     self.moveQueen(old[0],old[1],tempY)
                     problemMoves.append(((old[0],tempY,old[2]),new))#now, remember to finish the move.
+        #debug compare and contrast
+        #other.showState()
+        #self.showState()
         #code by Romaji
 
 
