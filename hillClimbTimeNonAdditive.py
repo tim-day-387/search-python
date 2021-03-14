@@ -40,30 +40,30 @@ restartShuffle=int(input("how many random moves to make for a restart?"))
 #this determines how many moves are made at a random restart to ensure they
 #don't do the same thing. Should not be more than the number of queens, as each queen is moved once.
 #restarts=int(input("how many restarts?"))
-allowedTime=True
-while allowedTime==True:
+allowedTime=None
+while allowedTime==None:
     try:
         allowedTime=float(input("how many SECONDS will you allow this to run for?"))
     except ValueError:
         print("try again with a positive number")
-        allowedTime=True
+        allowedTime=None
         continue
     if allowedTime <=0:
         print("must be a positive value")
-        allowedTime=True
+        allowedTime=None
         continue
 
-timeTillUpdate=True
-while timeTillUpdate==True:
+timeTillUpdate=None
+while timeTillUpdate==None:
     try:
         timeTillUpdate=float(input("how many SECONDS will you wait for an update?"))
     except ValueError:
         print("try again with a positive number")
-        timeTillUpdate=True
+        timeTillUpdate=None
         continue
     if timeTillUpdate <=0:
         print("must be a positive value")
-        timeTillUpdate=True
+        timeTillUpdate=None
         continue
     if timeTillUpdate >= allowedTime:
         q=input("Doing this will give no updates. Are you sure? (y for yes)")
@@ -71,7 +71,7 @@ while timeTillUpdate==True:
             timeTillUpdate=2*allowedTime #ensure that it can't do it by accident.
         else:
             print("Please input a time less than", allowedTime)
-            timeTillUpdate=True
+            timeTillUpdate=None
             
 print("generating board...")
 startBoard = board.extraQueens(size) #Can add an option for changing the max weight if wanted.
@@ -79,6 +79,7 @@ startBoard.showState() #assuming the biggest possible is 2 digits.
 
 bestBoard=startBoard
 bestCost=startBoard.getCost()
+initialCost=bestCost
 #movesToBestBoard=[] #no longer needs to save moves
 restartOfBestBoard=-1
 timeElapsedWhenFound=0.0
@@ -90,9 +91,10 @@ while time.process_time() < endAfter:
     thisBoard=startBoard.copy()
     #moveList=[]
     restart+=1
-    if restart > 0: #don't shuffle first attempt
-        usedSet={} #contains a set of queens that have been moved
+    if restart > 1: #don't shuffle first attempt
+        usedList=[] #contains a LIST of queens that have been moved
         #(by new position and weight, to make it easier)
+        #list as unhashable objects only
         for queen in range(restartShuffle):
             possible=thisBoard.getQueens()
             
@@ -101,7 +103,7 @@ while time.process_time() < endAfter:
                 #will throw an error if runs out of options.
                 index=RNG.randrange(len(possible)) #chose an index.
                 choice=possible.pop(index)
-                if choice in usedSet: 
+                if choice in usedList: 
                     choice=None
             #now, proced to randomly move it. 
             newY=RNG.randrange(thisBoard.size)
@@ -117,11 +119,12 @@ while time.process_time() < endAfter:
             newCord=choice[:2]
             
             #moveList.append((oldCord,newCord)) #save the move
-            usedSet.add(choice) #save that this queen has been moved.
+            usedList.append(choice) #save that this queen has been moved.
 
     sidewaysRemaining=sideways
     
-    while time.process_time() < endAfter: #Should end before the process time, but just in case
+    while time.process_time() < endAfter and sidewaysRemaining >0:
+        #Should end before the process time, but just in case
         #get our next possible moves, and go through them.
         possibleNext=thisBoard.listMoves()
         costToBeat=thisBoard.getCost() #look for moves the same or better.
@@ -138,10 +141,10 @@ while time.process_time() < endAfter:
                 costToBeat=temp.getCost() #save the cost
                 bestMoves=[move] #and clear the list, saving just it.
         #then, see if the best move is sideways.
+        #print(bestMoves)#debug
         if costToBeat == thisBoard.getCost(): 
             sidewaysRemaining -=1 #remove one
-            if sidewaysRemaining <1:
-                break
+            #print(sidewaysRemaining) #debug
         else:
             sidewaysRemaining=sideways #otherwise, reset the counter.
             
@@ -152,7 +155,8 @@ while time.process_time() < endAfter:
         #save the chosen move
         #moveList.append(((move[0],move[1]),(move[2],move[0])))
         #do the chosen move
-        newBoard=thisBoard.moveQueenCopy(*move)
+        newBoard=thisBoard.moveQueenCopy(*chosenMove) #... this was move. Which didn't work.
+        #newBoard.showState()#debug
         #now, replace this board with the original, for auto adjust
         thisBoard=startBoard.copy()
         thisBoard.autoAdjust(newBoard)
@@ -160,7 +164,9 @@ while time.process_time() < endAfter:
         if time.process_time()>=timeOfLastUpdate+timeTillUpdate:
             timeOfLastUpdate=time.process_time() #save time now, before the screen draw
             thisBoard.showState()
-            print("restart:",restart+1, 
+            #newBoard.showState() #debug, these should be the same
+            #print(chosenMove) #come on, please.
+            print("restart:",restart, 
                   "time remaining:",endAfter-timeOfLastUpdate) #might be negative on the last loop.
             
     #now, we're done with the hill climbing loop, time to check if it's the best
@@ -179,6 +185,7 @@ trueTime=time.process_time()-endAfter+allowedTime
 bestBoard.showState()
 #print("Moves")
 #print(*movesToBestBoard,sep="\n") #split each one across a line
+print("Cost reduced from",initialCost,", reduced by",100*(bestCost/initialCost),"%")
 print("Restart number:",restartOfBestBoard)
 print("Found",timeElapsedWhenFound,"seconds into computation")
 print("true time elapsed:",trueTime,"seconds vs",allowedTime,"seconds specified.")
