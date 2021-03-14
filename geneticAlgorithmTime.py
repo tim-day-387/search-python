@@ -150,7 +150,7 @@ def getMutateList():
     ret=[]
     for queen in range(size+1):
         if RNG.random() <=0.04:
-            moveSize=abs(RNG.randrange(mutate+1)+RNG.randint(-1*mutateSize,mutateSize)) #bias to smaller values.
+            moveSize=abs(RNG.randrange(mutateSize+1)+RNG.randint(-1*mutateSize,mutateSize)) #bias to smaller values.
             if moveSize==0:
                 moveSize=1
             elif moveSize>8:
