@@ -28,7 +28,10 @@ class board:
         self.startCost = startCost
         self.size = size
         #code by Tim Day
-
+    def __init__(self,size,queens,startCost=0):
+        """made so that things without extra queens run"""
+        self.__init__(self,size,queens,None,startCost=startCost)
+        #code by Romaji
     @classmethod
     def empty(cls,size):
         """Creates an empty board
