@@ -163,10 +163,9 @@ while time.process_time() < endAfter:
 
         if time.process_time()>=timeOfLastUpdate+timeTillUpdate:
             timeOfLastUpdate=time.process_time() #save time now, before the screen draw
-            thisBoard.showState()
-            #newBoard.showState() #debug, these should be the same
+            bestBoard.showState()
             #print(chosenMove) #come on, please.
-            print("restart:",restart, 
+            print("found on restart:",restartOfBestBoard,"current restart:",restart, 
                   "time remaining:",endAfter-timeOfLastUpdate) #might be negative on the last loop.
             
     #now, we're done with the hill climbing loop, time to check if it's the best
