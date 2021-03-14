@@ -70,7 +70,7 @@ class board:
 
             if(not((x,y) in seen)):
                 extraQueens.append([x, y, RNG.randint(1,maxWeight)])
-                extra = extra + 1
+                extra = size + 1
                 seen[(x,y)] = 1
 
         return cls(size, queens, extraQueens, 0)
@@ -303,6 +303,7 @@ test = board.empty(7)
 test.showState()
 test = board.regularQueens(9)
 test.showState()
-test = board.extraQueens(4)
-test.showState()
 """
+test = board.extraQueens(8)
+test.showState()
+
