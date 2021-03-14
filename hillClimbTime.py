@@ -62,12 +62,12 @@ restartOfBestBoard=-1
 timeElapsedWhenFound=0.0
 
 endAfter=time.process_time()+allowedTime
-
+restart=0
 while time.process_time() < endAfter:
     thisBoard=startBoard.copy()
     moveList=[]
-    
-    if restart > 0: #don't shuffle first attempt
+    restart+=1
+    if restart > 1: #don't shuffle first attempt
         usedSet={} #contains a set of queens that have been moved
         #(by new position and weight, to make it easier)
         for queen in range(restartShuffle):
@@ -136,7 +136,7 @@ while time.process_time() < endAfter:
         if tillUpdate==0: #waits until it's decreased to 0, but if starts at 0,
             #will never run
             thisBoard.showState()
-            print("moves:",len(moveList),"restart:",restart+1)
+            print("moves:",len(moveList),"restart:",restart)
             tillUpdate=updates
     #now, we're done with the hill climbing loop, time to check if it's the best
     if thisBoard.getCost() < bestCost:
