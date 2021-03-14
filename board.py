@@ -294,7 +294,7 @@ class board:
                 elif self.board[new[0]][new[1]]==0: #forgot Y X order again
                     #self.showState() #debug
                     self.moveQueen(old[0],old[1],new[0],new[1])
-                    print(move,"should be completed.")
+                    #print(move,"should be completed.")
                     #self.showState() #debug
                     completedMove=True  
                 #print(problemMoves,len(problemMoves),completedMove)
