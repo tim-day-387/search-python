@@ -302,7 +302,8 @@ class board:
                             tempY=old[0]+sign #start moving in the other direction
                     #then move to the temporary place
                     self.moveQueen(old[0],old[1],tempY)
-                    problemMoves.append(((old[0],tempY,old[2]),new))#now, remember to finish the move.
+                    problemMoves.append(((tempY,old[1],old[2]),new))#now, remember to finish the move.
+                    #also guess who forgot that it was Y X? Me.
         #debug compare and contrast
         #other.showState()
         #self.showState()
