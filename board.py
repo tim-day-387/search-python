@@ -9,7 +9,7 @@ class board:
     Includes the cost of the board, both as it is, and with the moves up to this point. Note y is first.
     Template by Romaji."""
     #please do this one first, to establish the format it's saved in (probably the same as the "queens" and "extraQueens" formats?)
-    def __init__(self,size,queens,extraQueens,startCost=0):
+    def __init__(self,size,queens,extraQueens=None,startCost=0):
         """size is the size of the board, as a single number (since they are square)
         queens is a array of the main queen for each column, in the format (row,weight)
         extra queens is a array of any additional queens, in the format (coll,row,weight)
@@ -27,11 +27,7 @@ class board:
         self.board = board
         self.startCost = startCost
         self.size = size
-        #code by Tim Day
-    def __init__(self,size,queens,startCost=0):
-        """made so that things without extra queens run"""
-        self.__init__(self,size,queens,None,startCost=startCost)
-        #code by Romaji
+        #code by Tim Day, Romaji
     @classmethod
     def empty(cls,size):
         """Creates an empty board
