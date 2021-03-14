@@ -303,7 +303,7 @@ test = board.empty(7)
 test.showState()
 test = board.regularQueens(9)
 test.showState()
-"""
 test = board.extraQueens(8)
 test.showState()
+"""
 
