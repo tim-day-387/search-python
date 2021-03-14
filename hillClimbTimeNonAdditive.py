@@ -33,10 +33,11 @@ sideways=int(input("How many sideways moves?"))
 ##        if q!="y":
 ##            print("Try again, then.")
 ##            updates=True
+size=int(input("How large a board?"))
 
 restartShuffle=int(input("how many random moves to make for a restart?"))
 #this determines how many moves are made at a random restart to ensure they
-#don't do the same thing. Should not be more than 9, as each queen is moved once.
+#don't do the same thing. Should not be more than the number of queens, as each queen is moved once.
 #restarts=int(input("how many restarts?"))
 allowedTime=True
 while allowedTime==True:
@@ -72,7 +73,7 @@ while timeTillUpdate==True:
             timeTillUpdate=True
             
 print("generating board...")
-startBoard = board.extraQueens(8) #Can add an option for changing the max weight if wanted.
+startBoard = board.extraQueens(size) #Can add an option for changing the max weight if wanted.
 startBoard.showState() #assuming the biggest possible is 2 digits.
 
 bestBoard=startBoard
@@ -136,7 +137,7 @@ while time.process_time() < endAfter:
                 costToBeat=temp.getCost() #save the cost
                 bestMoves=[move] #and clear the list, saving just it.
         #then, see if the best move is sideways.
-        if costToBeat == thisBoard.getCost(): #then this is sideways
+        if costToBeat == thisBoard.getCost(): 
             sidewaysRemaining -=1 #remove one
             if sidewaysRemaining <1:
                 break
