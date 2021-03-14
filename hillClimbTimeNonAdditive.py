@@ -89,7 +89,7 @@ restart=0
 while time.process_time() < endAfter:
     thisBoard=startBoard.copy()
     #moveList=[]
-    retstart+=1
+    restart+=1
     if restart > 0: #don't shuffle first attempt
         usedSet={} #contains a set of queens that have been moved
         #(by new position and weight, to make it easier)
