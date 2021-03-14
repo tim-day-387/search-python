@@ -275,39 +275,68 @@ class board:
                 problemMoves.append((oldQueens[i],newQueens[i]))
                 #I tried to catch this another way but it didn't work.
         
-        if len(problemMoves) !=0: #if there are any problem moves, sort them now.
+        if len(problemMoves) > 0: #if there are any problem moves, sort them now.
             problemMoves.sort(key=lambda move: 256*move[0][1]+move[0][2]) #sort by the X, and lower weight moves first.
-            while len(problemMoves)>0:
-                #self.showState() #debug
+            while len(problemMoves) > 0:
+                #print(problemMoves) #debug again.
+                
                 move=problemMoves.pop(0)
                 #print(move)#debug
                 old=move[0]
                 new=move[1]
                 #check if can just be made now
-                if self.board[new[0]][new[1]]==0:
-                    self.moveQueen(old[0],old[1],new[0])
-                else:
+                if self.board[old[0]][old[1]]==0: #if this happens, something is wrong.
+                    print(old,"is a problem!")
+                    self.showState()
+                completedMove=False
+                if old[0]==new[0] and old[1]==new[1]: #if it's already in the right spot...
+                    completedMove=True
+                elif self.board[new[0]][new[1]]==0: #forgot Y X order again
+                    #self.showState() #debug
+                    self.moveQueen(old[0],old[1],new[0],new[1])
+                    print(move,"should be completed.")
+                    #self.showState() #debug
+                    completedMove=True  
+                #print(problemMoves,len(problemMoves),completedMove)
+                if len(problemMoves)==0: #and then see if there's nothing
+                    return #because break didn't work
+                
+                if completedMove==False: #I don't know if this was the right call but it worked.
                     if new[0]<old[0]: #try to move in the direction of the target
                         sign=-1
+                    elif new[0]==old[0]:
+                        continue
                     else:
                         sign=1
                     tempY=old[0]+sign
-                    if tempY<0 or tempY>=self.size: #if it's out of range, fix this now!
+                    if tempY<0 or tempY>self.size: #if it's out of range, fix this now!
                         sign*=-1 #clearly can't move in that direction
                         tempY+=2*sign #go the other direction
                     while self.board[tempY][old[1]]!=0: #does tempY work? If not, fix it.
                         tempY+=sign
-                        if tempY<0 or tempY>=self.size: #if it's out of range, fix this now!
+                        if tempY<0 or tempY>self.size: #if it's out of range, fix this now!
                             sign*=-1 #clearly can't move in that direction
                             tempY=old[0]+sign #start moving in the other direction
                     #then move to the temporary place
                     self.moveQueen(old[0],old[1],tempY)
-                    problemMoves.append(((tempY,old[1],old[2]),new))#now, remember to finish the move.
+                    if tempY!=new[0] and completedMove==False: #does this move need to be finished?
+                        problemMoves.append(((tempY,old[1],old[2]),new))#now, remember to finish the move.
                     #also guess who forgot that it was Y X? Me.
         #debug compare and contrast
         #other.showState()
         #self.showState()
         #code by Romaji
+
+
+# Test Code
+"""
+test = board.empty(7)
+test.showState()
+test = board.regularQueens(9)
+test.showState()
+test = board.extraQueens(8)
+test.showState()
+"""
 
 
 # Test Code
