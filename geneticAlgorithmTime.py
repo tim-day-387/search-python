@@ -11,6 +11,7 @@ if seed=="":
     RNG.seed()
 else:
     RNG.seed(seed)
+size=int(input("how large a board?"))
 
 def mutate(offspring,mutations):
     """mutates offspring by mutations list. See makeOffspring for more details on the format of the list.
@@ -24,38 +25,38 @@ Updates the offspring in place"""
             offspring.moveQueen(coordinate[0],coordinate[1],goalY)
         except moveException:
             goalY=-1*goalY+2*coordinate[0] #flip the direction
-            goalY=max(goalY,0)%8 #normalize it
+            goalY=max(goalY,0)%size #normalize it
             while offspring.board[coordinate[0]][goalY]!=0:
-                goalY=(goalY+1)%8
+                goalY=(goalY+1)%size
             offspring.moveQueen(coordinate[0],coordinate[1],goalY)
                 
 
 def makeOffspring(par1,par2,original,mutations1=None,mutations2=None):
     """Combines parent 1 (par1) and parent 2 (par2) without modifying them.
 Then, performs any mutations (listed in [queenNumber, amount] format,
-where queen number is 0 to 8, 
+where queen number is 0 to size, 
 and amount is how much to move by (if possible. Otherwise, goes to an open space.).
 Finally, it computes the proper movement cost from the original.
 
 Then repeats with the alternate offspring.
 Offspring 1 uses mutations 1, offspring 2 uses mutations 2
 
-Picks collumns at random for mutation"""
+Picks columns at random for mutation"""
     division=[False] #list for which offspring gets which column. First offspring always gets first colum.
     allFalse=True #make sure there's at least one true.
-    for i in range(7):
+    for i in range(size-1):
         temp=(RNG.random()>0.5)
         if temp==True:
             allFalse=False
-        elif i==6 and allFalse:
+        elif i==size-2 and allFalse:
             temp=True #ensure last one is true if all others are False
         division.append(temp)
     #make the offspring
     off1=par1.copy()
     off2=par2.copy()
-    for col in range(8):
+    for col in range(size):
         if division[col]: #only swap if marked.
-            for row in range(8):
+            for row in range(size):
                 temp=off1.board[row][col]
                 off1.board[row][col]=off2.board[row][col]
                 off2.board[row][col]=temp
@@ -143,11 +144,11 @@ while populationSize==True:
 preserve=4
 cull= 2*(int(populationSize*0.15))
 mutateChance=0.04 #per queen number
-mutateSize=5 #bigger means more chance of large values
+mutateSize=size//2 +1 #bigger means more chance of large values
 
 def getMutateList():
     ret=[]
-    for queen in range(9):
+    for queen in range(size+1):
         if RNG.random() <=0.04:
             moveSize=abs(RNG.randrange(mutate+1)+RNG.randint(-1*mutateSize,mutateSize)) #bias to smaller values.
             if moveSize==0:
@@ -161,14 +162,14 @@ def getMutateList():
         return ret
 
 print("generating board...")
-startBoard = board.extraQueens(8) #Can add an option for changing the max weight if wanted.
+startBoard = board.extraQueens(size) #Can add an option for changing the max weight if wanted.
 startBoard.showState()
 
 print("generating population...")
 parents=[]
 while len(parents) < populationSize:
     temp=startBoard.copy()
-    for i in range(30): #this is slow, but... it's only run once per member of the starting population.
+    for i in range(4*size): #this is slow, but... it's only run once per member of the starting population.
         moves=temp.listMoves()
         move=RNG.choice(moves)
         temp.moveQueen(*move)
