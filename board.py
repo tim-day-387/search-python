@@ -27,7 +27,7 @@ class board:
         self.board = board
         self.startCost = startCost
         self.size = size
-        #code by Tim Day, Romaji
+        #code by Tim Day
     @classmethod
     def empty(cls,size):
         """Creates an empty board
@@ -99,7 +99,7 @@ class board:
         
         print("Board:")
         token ="+"+width*"-"
-        for i in range(self.size):
+        for i in range(self.size): 
             print(self.size*token+"+")
             print("|",end="")
             for j in range(self.size):
@@ -226,7 +226,7 @@ class board:
     def copy(self):
         """returns a copy of the board object"""
         ret=board(self.size,[(0,0)]*self.size) #makes a blank board of the correct size
-        ret.board=self.board
+        ret.board=self.board.copy() #fixes copying
         ret.startCost=self.startCost
         return ret
         #code by Tim Day, Romaji
@@ -256,6 +256,9 @@ class board:
             raise ValueError("Not the same number of queens!")
         newQueens.sort(key=lambda queen: self.size*(256*queen[1]+queen[2])+queen[0]) #sort by the x first, weight second, then Y assuming weight is less than 256
         oldQueens.sort(key=lambda queen: self.size*(256*queen[1]+queen[2])+queen[0])
+        #debug save me
+        #print(newQueens)
+        #print(oldQueens)
         #now try to move each old queen to the new queen place
         problemMoves=[] #if a queen needs to go where another is, save them for later.
         for i in range(len(oldQueens)):
@@ -263,14 +266,20 @@ class board:
                 raise ValueError("At least one queen is in the wrong column!")
             if newQueens[i][2] != oldQueens[i][2]: #ensure the weights match.
                 raise ValueError("At least one queen has the wrong weight!")
-            if self.board[newQueens[i][0]][newQueens[i][1]]!=0:
-                problemMoves.append((oldQueens[i],newQueens[i])) #save it for later.
-            #otherwise, move the old to new.
-            self.moveQueen(oldQueens[0],oldQueens[1],newQueens[0])
+            if newQueens[i][0] == oldQueens[i][0]: #if they're in the same place
+                continue #ignore it
+            try:
+                self.moveQueen(oldQueens[i][0],oldQueens[i][1],newQueens[i][0])
+            except moveException:
+                problemMoves.append((oldQueens[i],newQueens[i]))
+                #I tried to catch this another way but it didn't work.
+        
         if len(problemMoves) !=0: #if there are any problem moves, sort them now.
             problemMoves.sort(key=lambda move: 256*move[0][1]+move[0][2]) #sort by the X, and lower weight moves first.
             while len(problemMoves)>0:
+                #self.showState() #debug
                 move=problemMoves.pop(0)
+                #print(move)#debug
                 old=move[0]
                 new=move[1]
                 #check if can just be made now
