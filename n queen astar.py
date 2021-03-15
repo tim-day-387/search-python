@@ -39,7 +39,7 @@ def Hfunction(state):
             i = np.sort(i)
             n = len(i) - 1
             for j in i:
-                result_ += (j**2)*n
+                result_ += (j**2)*n    #change n or the power of j for different H function !
                 n -= 1
             result = result_
 
