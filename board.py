@@ -286,13 +286,15 @@ class board:
                 new=move[1]
                 #check if can just be made now
                 if self.board[old[0]][old[1]]==0: #if this happens, something is wrong.
-                    print(old,"is a problem!")
+                    print(move,"is a problem!")
                     self.showState()
                 if self.board[new[0]][new[1]]!=0: #if want to move to a place that's already full, put it at the back
                     problemMoves.append(move)
                     queenAtNewCountdown-=1 #one of these has been used up
                     if queenAtNewCountdown <=0:
                         raise moveException("Queen in second position too many times! Program issue!")
+                    else:
+                        continue
                 completedMove=False
                 if old[0]==new[0] and old[1]==new[1]: #if it's already in the right spot...
                     completedMove=True
@@ -342,15 +344,3 @@ test.showState()
 test = board.extraQueens(8)
 test.showState()
 """
-
-
-# Test Code
-"""
-test = board.empty(7)
-test.showState()
-test = board.regularQueens(9)
-test.showState()
-test = board.extraQueens(8)
-test.showState()
-"""
-
