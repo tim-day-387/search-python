@@ -4,7 +4,7 @@ import time
 #code by Romaji.
 #god this is kinda a mess.
 #at least I comment well.
-#this version uses time instead of genetic
+#this version uses time instead of generation
 
 seed=input("type something for a set seed, hit enter for random.")
 if seed=="":
@@ -12,6 +12,8 @@ if seed=="":
 else:
     RNG.seed(seed)
 size=int(input("how large a board?"))
+
+quickMode=input("run in quick mode? y for yes, anything else for no.")
 
 def mutate(offspring,mutations):
     """mutates offspring by mutations list. See makeOffspring for more details on the format of the list.
@@ -148,13 +150,13 @@ mutateSize=size//2 +1 #bigger means more chance of large values
 
 def getMutateList():
     ret=[]
-    for queen in range(size+1):
+    for queen in range((7+9*size)//8): #the +7 makes it so the number of queens rounds up
         if RNG.random() <=0.04:
             moveSize=abs(RNG.randrange(mutateSize+1)+RNG.randint(-1*mutateSize,mutateSize)) #bias to smaller values.
             if moveSize==0:
                 moveSize=1
-            elif moveSize>8:
-                moveSize=8
+            elif moveSize>size: #these should have been size thw whole time.
+                moveSize=size
             ret.append((queen,moveSize))
     if len(ret)==0:
         return None
@@ -163,7 +165,10 @@ def getMutateList():
 
 print("generating board...")
 startBoard = board.extraQueens(size) #Can add an option for changing the max weight if wanted.
-startBoard.showState()
+if quickMode=="y":
+    print(startBoard.getCost())
+else:
+    startBoard.showState()
 
 print("generating population...")
 parents=[]
@@ -177,7 +182,11 @@ while len(parents) < populationSize:
 print("parents generated.")
 parents.sort(key=lambda this:this.getCost()) #sort by cost, smallest to largest
 print("best so far")
-parents[0].showState()
+if quickMode=="y":
+    print(parents[0].getCost())
+else:
+    parents[0].showState()
+
 
 generation=1
 timeOfLastUpdate=time.process_time()
@@ -208,8 +217,11 @@ while time.process_time() < endAfter: #has the clock hit the ending yet?
     #see if update is needed.
     if time.process_time()>=timeOfLastUpdate+timeTillUpdate:
             timeOfLastUpdate=time.process_time() #save time now, before the screen draw
-            print("generation:",generation,"time remaining:",endAfter-timeOfLastUpdate)
-            bestOf[-1].showState()
+            if quickMode=="y":
+                print(generation,endAfter-timeOfLastUpdate,bestOf[-1].getCost(),sep=",")
+            else:
+                print("generation:",generation,"time remaining:",endAfter-timeOfLastUpdate)
+                bestOf[-1].showState()
     #move to next generation
     parents=kids
     generation+=1
