@@ -14,7 +14,11 @@ else:
     RNG.seed(seed)
 size=int(input("how large a board?"))
 
-quickMode=input("run in quick mode? y for yes, anything else for no.")
+#quickMode=input("run in quick mode? y for yes, anything else for no.")
+
+#quick size and mode
+#size=16
+quickMode="y"
 
 def mutate(offspring,mutations):
     """mutates offspring by mutations list. See makeOffspring for more details on the format of the list.
@@ -93,6 +97,7 @@ Picks columns at random for mutation"""
 ##        if q!="y":
 ##            generations=True
 allowedTime=True
+allowedTime=30 #quick skip
 while allowedTime==True:
     try:
         allowedTime=float(input("how many SECONDS will you allow this to run for?"))
@@ -106,6 +111,7 @@ while allowedTime==True:
         continue
 
 timeTillUpdate=True
+timeTillUpdate=10 #quick version to skip input
 while timeTillUpdate==True:
     try:
         timeTillUpdate=float(input("how many SECONDS will you wait for an update?"))
@@ -126,6 +132,7 @@ while timeTillUpdate==True:
             timeTillUpdate=True
 
 populationSize=True
+populationSize=100 #quick mode
 while populationSize==True:
     try:
         populationSize=int(input("How many population members?"))
@@ -142,10 +149,10 @@ while populationSize==True:
         if q!="Y":
             populationSize=True
 #and these I'm just going to bake in, you'll have to change the file if you want to modify
-preserve=4
+preserve=2
 cull= 2*(int(populationSize*0.15))
-mutateChance=0.04 #per queen number
-mutateSize=size//2 +1 #bigger means more chance of large values
+mutateChance=0.08 #per queen number
+mutateSize=2*size//3+1 #bigger means more chance of large values
 
 def getMutateList():
     ret=[]
@@ -264,7 +271,8 @@ while time.process_time() < endAfter: #has the clock hit the ending yet?
 #now, report the results.
 trueTime=time.process_time()-endAfter+allowedTime #mark how much over... probably a ms or so.
 print("In",trueTime,"seconds, computed",generation,"generations")
-q=input("c for csv output, s for summary, f for final result:").lower()
+#q=input("c for csv output, s for summary, f for final result:").lower()
+q="s" #remove this line, and uncomment the line above to allow adjusting
 if q=="c":
     for i in range(bestOf):
         print(i,bestOf[i].getCost(),sep=",")
@@ -272,6 +280,7 @@ elif q=="s":
     lastCost=bestOf[-1].getCost()
     midCost=bestOf[(populationSize//2)-1].getCost()
     firstCost=bestOf[0].getCost()
+    print(lastImprovement)
     print("at start",firstCost,"then half way",midCost,"with finally ending on",lastCost)
     if (lastCost/midCost) < (midCost/firstCost):
         print("it really picked up at the end")
