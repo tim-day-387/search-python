@@ -28,7 +28,7 @@ Updates the offspring in place"""
         except moveException:
             goalY=-1*goalY+2*coordinate[0] #flip the direction
             goalY=max(goalY,0)%size #normalize it
-            while offspring.board[coordinate[0]][goalY]!=0:
+            while offspring.board[goalY][coordinate[1]]!=0: #was checking the wrong space for a queen (it goes Y X, not X Y)
                 goalY=(goalY+1)%size
             offspring.moveQueen(coordinate[0],coordinate[1],goalY)
                 
