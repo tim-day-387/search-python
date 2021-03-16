@@ -276,7 +276,7 @@ class board:
         
         if len(problemMoves) > 0: #if there are any problem moves, sort them now.
             problemMoves.sort(key=lambda move: 256*move[0][1]+move[0][2]) #sort by the X, and lower weight moves first.
-            queenAtNewCountdown=32*len(problemMoves) #if there's a queen at the new position this many times, something is wrong
+            #queenAtNewCountdown=32*len(problemMoves) #old attempt to catch an error
             while len(problemMoves) > 0:
                 #print(problemMoves) #debug again.
                 
@@ -288,22 +288,24 @@ class board:
                 if self.board[old[0]][old[1]]==0: #if this happens, something is wrong.
                     print(move,"is a problem!")
                     self.showState()
-                if self.board[new[0]][new[1]]!=0: #if want to move to a place that's already full, put it at the back
-                    problemMoves.append(move)
-                    queenAtNewCountdown-=1 #one of these has been used up
-                    if queenAtNewCountdown <=0:
-                        raise moveException("Queen in second position too many times! Program issue!")
-                    else:
-                        continue
+##                if self.board[new[0]][new[1]]!=0: #if want to move to a place that's already full, put it at the back
+##                    problemMoves.append(move)
+##                    queenAtNewCountdown-=1 #one of these has been used up
+##                    if queenAtNewCountdown <=0:
+##                        print(move,problemMoves)
+##                        raise moveException("Queen in second position too many times! Program issue!")
+##                    else:
+##                        continue #old attempt to catch queen in second position errors
                 completedMove=False
                 if old[0]==new[0] and old[1]==new[1]: #if it's already in the right spot...
                     completedMove=True
                 elif self.board[new[0]][new[1]]==0: #forgot Y X order again
                     #self.showState() #debug
-                    self.moveQueen(old[0],old[1],new[0],new[1])
-                    #print(move,"should be completed.")
-                    #self.showState() #debug
-                    completedMove=True  
+                    try:
+                        self.moveQueen(old[0],old[1],new[0],new[1])
+                        completedMove=True
+                    except moveException: #should catch any slipups.
+                        completedMove=False
                 #print(problemMoves,len(problemMoves),completedMove)
                 if len(problemMoves)==0: #and then see if there's nothing
                     return #because break didn't work
