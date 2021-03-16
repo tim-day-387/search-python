@@ -50,12 +50,12 @@ class board:
 
     @classmethod
     def extraQueens(cls,size,maxWeight=9):
-        """Creates a board with 1 queen per column with an addition 'size' # of queens
+        """Creates a board with 1 queen per column with an addition of ceil(size/8) queens
         All queens have weight between 1 and maxWeight
         Example: test = board.heavyQueens(4)"""        
         queens = []
         extraQueens = []
-        extra = 0
+        extra = (7+size)//8 #the added 7 is to change from rounding down to rounding up
         seen = {}
 
         for i in range(0, size):
@@ -63,17 +63,16 @@ class board:
             queens.append([y, RNG.randint(1,maxWeight)])
             seen[(i,y)] = 1
             
-        while extra < size:
+        while len(extraQueens) < extra:
             x = RNG.randint(0,size-1)
             y = RNG.randint(0,size-1)
 
             if(not((x,y) in seen)):
                 extraQueens.append([x, y, RNG.randint(1,maxWeight)])
-                extra = size + 1
                 seen[(x,y)] = 1
 
         return cls(size, queens, extraQueens, 0)
-        #code by Tim Day
+        #code by Tim Day,Romaji
         
     def showState(self):
         """prints the board state out, in a way like
