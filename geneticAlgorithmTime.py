@@ -234,7 +234,7 @@ if q=="c":
         print(i,bestOf[i].getCost(),sep=",")
 elif q=="s":
     lastCost=bestOf[-1].getCost()
-    midCost=bestOf[(generationSize//2)-1].getCost()
+    midCost=bestOf[(populationSize//2)-1].getCost()
     firstCost=bestOf[0].getCost()
     print("at start",firstCost,"then half way",midCost,"with finally ending on",lastCost)
     if (lastCost/midCost) > (midCost/firstCost):
