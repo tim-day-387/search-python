@@ -68,13 +68,13 @@ class BoardA:
     def __hash__(self):
        return hash(self.astar)
 
-    def create_child_astar(self, state, move):
+    def create_child_ids(self, state, move):
         # Create a child board 
         child = BoardA(s=state)
-        child.p = self # the parent node of the current node
+        child.p = self                                                                                               # The parent node of the current node
         child.t = self.t + abs(int(np.where(self.s.T[move[1]] > 0)[0]) - move[0])*np.sum(state, axis=0)[move[1]]**2 
-        child.l = self.l + 1 # length of solution path 
-        child.m_t = self.m_t + [move] # the moves to reach this node.
+        child.l = self.l + 1                                                                                         # Length of solution path 
+        child.m_t = self.m_t + [move]                                                                                # The moves to reach this node.
         child.time = self.time 
         child.astar = child.t + child.h 
 
@@ -98,7 +98,7 @@ class BoardA:
             child_state.T[y_0[i]] = 0
             # Replace value
             child_state[(x_0[i], y_0[i])] = weights[y_0[i]] 
-            child = self.create_child_astar(child_state, (x_0[i], y_0[i]))
+            child = self.create_child_ids(child_state, (x_0[i], y_0[i]))
 
             # Output
             if child != self.p:
@@ -119,7 +119,10 @@ def build(board, seen, start_time, sum, depth):
         print("Total nodes expanded:", sum)
         a=time.time()-start_time
         print("Time Consumption:", "%.2f" % a)
-        branch=sum/len(board.m_t)
+        if len(board.m_t) == 0:
+            branch = -1
+        else:
+            branch=sum/len(board.m_t)
         print("Effective Branching Factor:", "%.2f" % branch)
         print("Cost:", board.t)
         print("Sequence of moves:",board.m_t)
@@ -145,12 +148,12 @@ def ids(state):
     seen=set()
     start_time=time.time()
     board=BoardA(state)
+    print("Initial State:")
+    print(board.s)
     build(board, seen, start_time, 1, 1)
-
                     
 #Execution
-
-n = int(input("How many queens:"))
+n = int(input("Input Board Size: "))
 t = board.regularQueens(n)
 c=np.nonzero(t.board)
 state= np.zeros((n,n))
