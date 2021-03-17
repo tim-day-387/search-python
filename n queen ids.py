@@ -138,9 +138,10 @@ def build(board, seen, start_time, sum, depth):
                 result = build(i, seen, start_time, sum, depth+1)
                 if result == 0:
                     return 0
-                elif result == -1:
-                    print("No solution found in 60 seconds")   
+                elif result == -1:   
                     return -1
+                elif result == 1:
+                    sum+=25
 
     return 1
 
@@ -150,7 +151,9 @@ def ids(state):
     board=BoardA(state)
     print("Initial State:")
     print(board.s)
-    build(board, seen, start_time, 1, 1)
+    output = build(board, seen, start_time, 1, 1)
+    if output == 1:
+        print("No solution found")
                     
 #Execution
 n = int(input("Input Board Size: "))
