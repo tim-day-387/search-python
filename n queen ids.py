@@ -5,8 +5,8 @@ import time
 import queue
 
 
-def Hfunction(state):
-    # Calculate H fucntion: The total squared weights of the lighter queen in conflicting pairs.
+def solution(state):
+    # Find if the given board is a solution
     result = []
     n = state.shape[0]
     
@@ -38,7 +38,7 @@ def Hfunction(state):
             i = np.sort(i)
             n = len(i) - 1
             for j in i:
-                result_ += (j**2)*n    #change n or the power of j for different H function !
+                result_ += (j**2)*n   
                 n -= 1
             result = result_
 
@@ -47,12 +47,12 @@ def Hfunction(state):
 class BoardA:
 
     def __init__(self, s,p=None,m=None, c=None, x=None, g_c=None):
-        self.s = s.copy() # Current board state
-        self.p = p # the parent node of the current 
-        self.t = 0 # current cost
-        self.h = Hfunction(state = self.s) # current h value
-        self.l = 0 # length of solution path 
-        self.m_t = [] # the moves to reach this node. 
+        self.s = s.copy()                                    # Current board state
+        self.p = p                                           # the parent node of the current 
+        self.t = 0                                           # current cost
+        self.h = solution(state = self.s)                    # current h value
+        self.l = 0                                           # length of solution path 
+        self.m_t = []                                        # the moves to reach this node. 
         self.time = time.time()
         self.astar = self.t + self.h 
 
@@ -69,9 +69,7 @@ class BoardA:
        return hash(self.astar)
 
     def create_child_astar(self, state, move):
-        '''  
-            Create a child board 
-        '''
+        # Create a child board 
         child = BoardA(s=state)
         child.p = self # the parent node of the current node
         child.t = self.t + abs(int(np.where(self.s.T[move[1]] > 0)[0]) - move[0])*np.sum(state, axis=0)[move[1]]**2 
@@ -83,28 +81,26 @@ class BoardA:
         return child
 
 
-    def expand_astar(self):
-        '''  
-            Expand the current node, adding one layer of children
-        '''
+    def expand_ids(self):
+        # Expand the current node, adding one layer of children        
         output = []
 
-        #all possible spaces 
+        # All possible spaces 
         x_0 , y_0 = np.where(self.s==0)
         
         weights = np.sum(self.s, axis=0)
 
-        #Create children nodes
+        # Create children nodes
         for i in range(len(x_0)):
             
             child_state = self.s.copy()
-            #Define the column to 0
+            # Define the column to 0
             child_state.T[y_0[i]] = 0
-            #Replace value
+            # Replace value
             child_state[(x_0[i], y_0[i])] = weights[y_0[i]] 
             child = self.create_child_astar(child_state, (x_0[i], y_0[i]))
 
-            #output
+            # Output
             if child != self.p:
                 output.append(child)
         
@@ -131,7 +127,7 @@ def build(board, seen, start_time, sum, depth):
         print(board.s)
         return 0
     else:
-        child=board.expand_astar()
+        child=board.expand_ids()
         for i in child:
             if i not in seen:
                 sum+=1
@@ -144,6 +140,13 @@ def build(board, seen, start_time, sum, depth):
                     return -1
 
     return 1
+
+def ids(state):
+    seen=set()
+    start_time=time.time()
+    board=BoardA(state)
+    build(board, seen, start_time, 1, 1)
+
                     
 #Execution
 
@@ -152,9 +155,6 @@ t = board.regularQueens(n)
 c=np.nonzero(t.board)
 state= np.zeros((n,n))
 state[c]= t.board[c]
-seen=set()
-start_time=time.time()
-board=BoardA(state)
-build(board, seen, start_time, 1, 1)
+ids(state)
 
                     
