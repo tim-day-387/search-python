@@ -248,8 +248,34 @@ class GrabAndDuckPlayer(Player):
         pass  # This is just a placeholder, remove when real code goes here
 
 #helper function to make an imaginary version of the game to play out. Creates with all the information the AI (player 2 in turn order) should know.
-def makeVirtualGameCopy(currGame):
-    pass #placeholder, also real inputs will be added
+#Returns the random state and a generator to use for the AI to play with.
+def makeVirtualGameCopy(currGame,thisTrick):
+    #make a virtual game with 3 players with set names (to aid in debug)
+    alice=YieldPlayer("alice")
+    me =YieldPlayer("me")
+    bob =YieldPlayer("bob")
+    virPlayers=[alice,me,bob]
+    #make the scores and zombie_count match
+    for i in range(3):
+        virPlayers[i].score=currGame.players[i].score
+        virPlayers[i].zombie_count=currGame.players[i].zombie_count
+    #get my hand and played cards 
+    myHand=currGame.players[1].hand
+    playedCards=currGame.played_cards
+    #now, make the game.
+    newGame=Game(virPlayers,yieldMode=True,quietMode=True)
+    #deal the cards
+    newGame.dealSpecial(myHand,playedCards,thisTrick) #Randomly deal the unknown cards, while keeping the known cards with me.
+    #save alice and bob's starting hands
+    aliceHand=frozenset(newGame.players[0].hand)
+    bobHand=frozenset(newGame.players[2].hand)
+    #figure out the leader
+    lead=2-len(thisTrick) #if the currentTrick is empty, we are the leader. if there are two cards, bob must have lead.
+    #create the generator
+    gen = newGame.playHand(leader=lead,trick=thisTrick.copy()) #we copy the trick just in case
+    return (gen,aliceHand,bobHand)
+
+
 
 class RolloutPlayer(Player):
     def __init__(self, name):
