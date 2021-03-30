@@ -5,7 +5,7 @@ if seed=="":
 else:
     random.seed(seed)
 import abc
-
+import time
 
 class Deck():
     def __init__(self,exceptFor=None):
@@ -282,14 +282,18 @@ class RolloutPlayer(Player):
         super().__init__(name)
 
     def playCard(self, trick,game): #game is only used to make a virtual copy, does not hand look
-        pass  # This is just a placeholder, remove when real code goes here
+        terminateBy=time.process_time()+1.0 #set a timer for one second.
+        while time.process_time() < terminateBy: #loop until time has finished.
+            pass #I'm not up for coding this right now
 
 class MctsPlayer(Player):
     def __init__(self, name):
         super().__init__(name)
 
     def playCard(self, trick,game): #game is only used to make a virtual copy, does not hand look
-        pass  # This is just a placeholder, remove when real code goes here
+        terminateBy=time.process_time()+1.0 #set a timer for one second.
+        while time.process_time() < terminateBy: #loop until time has finished.
+            pass #I'm not up for coding this right now
 
 # try at the end?
 playahs = []
