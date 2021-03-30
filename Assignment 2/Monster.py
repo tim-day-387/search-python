@@ -1,4 +1,3 @@
-
 import random
 seed=input("type something for set seed, hit enter for random")
 if seed=="":
@@ -6,16 +5,6 @@ if seed=="":
 else:
     random.seed(seed)
 import abc
-
-#######
-playahs = []
-playahs.append(RandomPlayer("Foo"))
-playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
-playahs.append(RandomPlayer("Bar"))
-theGame = Game(playahs)
-
-theGame.play()
-###################
 
 
 class Deck():
@@ -188,7 +177,7 @@ class Game:  # Main class
             self.players[leader].score += score
             if self.players[leader].score >= self.WIN_SCORE:
                 self.slp(self.players[leader].name, "won with", self.players[leader].score, "points!")
-                return (True,True,leader) #is this terminal,did someone win, if so who? is what this should be read as.
+                yield (True,True,leader) #is this terminal,did someone win, if so who? is what this should be read as.
             
             # Keep track of the cards played
             self.played_cards.extend(trick)
@@ -206,17 +195,21 @@ class Game:  # Main class
             for i in range(len(self.players)-1):
                 self.players[(leader+1+i) % len(self.players)].score -= self.ZOMBIE_ARMY_PENALTY
         # Check for winner
-            if self.players[leader].score >= self.WIN_SCORE:
-                self.slp(self.players[leader].name, "won with", self.players[leader].score, "points!")
-                return (True, True,leader) #yes, the hand ends, yes there's a winner, and it is leader
+        if self.players[leader].score >= self.WIN_SCORE:
+            self.slp(self.players[leader].name, "won with", self.players[leader].score, "points!")
+            yield (True, True,leader) #yes, the hand ends, yes there's a winner, and it is leader
+        else:
             #otherwise, another hand is needed.
-            return (True, False, leader) #The hand is over, but a winner is not decided. Play next hand.
+            yield (True, False, leader) #The hand is over, but a winner is not decided. Play next hand.
             
-    def play(self):
+    def play(self): #don't use if yield players are in play!
         lead_player = 0
         while True:  # Keep looping on hands until we have a winner
             self.deal()
-            result=self.playHand(leader=lead_player)
+            try: #have to do it this way since its a generator now
+                result=next(self.playHand(leader=lead_player))
+            except StopIteration:
+                print("Didn't stop successfully.")
             if result[1]==True: #if the hand had someone win,
                 return #then we're done.
             #otherwise...
@@ -228,13 +221,13 @@ class Game:  # Main class
             self.played_cards=[]
             lead_player=result[2] #get the winner of the last hand
             
-                
 class RandomPlayer(Player):  # Inherit from Player
     def __init__(self, name):
         super().__init__(name)
 
     def playCard(self, trick,game): #added the game itself, since the AI needs that, even if it isn't used here.
         print("-", self.name+"("+str(self.score)+")(Z"+str(self.zombie_count)+")", "sees", trick)
+        #comment out for quiet mode
         if len(trick) != 0:
             # Figure out what was led and follow it if we can
             suit = trick[0][0]
@@ -272,5 +265,11 @@ class MctsPlayer(Player):
     def playCard(self, trick,game): #game is only used to make a virtual copy, does not hand look
         pass  # This is just a placeholder, remove when real code goes here
 
+# try at the end?
+playahs = []
+playahs.append(RandomPlayer("Foo"))
+playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
+playahs.append(RandomPlayer("Bar"))
+theGame = Game(playahs)
 
-
+theGame.play()
