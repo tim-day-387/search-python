@@ -1,3 +1,12 @@
+
+import random
+seed=input("type something for set seed, hit enter for random")
+if seed=="":
+    random.seed()
+else:
+    random.seed(seed)
+import abc
+
 playahs = []
 playahs.append(RandomPlayer("Foo"))
 playahs.append(RandomPlayer("Bar"))
@@ -8,9 +17,6 @@ game.play()
 
 ###################
 
-import random
-random.seed(2021)
-import abc
 
 class Deck():
     def __init__(self):
@@ -131,7 +137,7 @@ class Game():  # Main class
         lead_player = 0
         while True:  # Keep looping on hands until we have a winner
             self.deal()
-            while len(self.players[0].hand) > 0:
+            while len(self.players[0].hand) > 0: #while players have a card in hand.
                 trick = []
                 # Form the trick, get a card from each player. Score the trick.
                 for i in range(len(self.players)):
@@ -142,7 +148,7 @@ class Game():  # Main class
 
                 # Convert winning trick index into new lead player index
                 lead_player = (lead_player + win_idx) % len(self.players)
-                print(self.players[lead_player].name, "won trick", score, "points")
+                print(self.players[lead_player].name, "won trick", score, "points") #probably these should be skipped in a later fast mode
 
                 # Check for zombie army
                 self.players[lead_player].zombie_count += n_zomb
