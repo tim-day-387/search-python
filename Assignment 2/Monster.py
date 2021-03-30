@@ -52,8 +52,8 @@ class Player(metaclass=abc.ABCMeta):  # This is an abstract base class.
     def playCard(self):
         pass
 #a player who shows legal cards instead of playing one.
-#this only works if yeildMode is true
-class YeildPlayer(Player):
+#this only works if yieldMode is true
+class YieldPlayer(Player):
     def __init__(self, name):
         super().__init__(name)
 
@@ -75,8 +75,8 @@ class YeildPlayer(Player):
     def removeCard(self,card):
         self.hand.remove(card) # there should be only 1
         
-class Game():  # Main class
-    def __init__(self, players,yeildMode=False,quietMode=False):
+class Game:  # Main class
+    def __init__(self, players,yieldMode=False,quietMode=False):
         self.deck = Deck()
         self.players = players
         self.played_cards = []  # List of already played cards in this hand
@@ -154,7 +154,7 @@ class Game():  # Main class
                     #first, get the legal cards
                     legalCards=self.players[p_idx].playCard(trick,self) 
                     #then yield to let the game master choose a card.
-                    chosenCard = yeild (False,p_idx,legalCards,trick,self.played_cards) #this player would know these things, so use that to decide.
+                    chosenCard = yield (False,p_idx,legalCards,trick,self.played_cards) #this player would know these things, so use that to decide.
                     #it is not a terminal state, here's the player, the cards allowed to play, what's been played in this trick, and what in this hand.
                     self.players[p_idx].removeCard(chosenCard) #make sure that this card is not in the hand for later
                     trick.append(chosenCard)
@@ -200,7 +200,7 @@ class Game():  # Main class
                 self.players[(leader+1+i) % len(self.players)].score -= self.ZOMBIE_ARMY_PENALTY
         # Check for winner
             if self.players[leader].score >= self.WIN_SCORE:
-                self.slp(self.players[lead_player].name, "won with", self.players[lead_player].score, "points!")
+                self.slp(self.players[leader].name, "won with", self.players[leader].score, "points!")
                 return (True, True,leader) #yes, the hand ends, yes there's a winner, and it is leader
             #otherwise, another hand is needed.
             return (True, False, leader) #The hand is over, but a winner is not decided. Play next hand.
@@ -209,7 +209,7 @@ class Game():  # Main class
         lead_player = 0
         while True:  # Keep looping on hands until we have a winner
             self.deal()
-            result=self.playHand(leader=leadPlayer)
+            result=self.playHand(leader=lead_player)
             if result[1]==True: #if the hand had someone win,
                 return #then we're done.
             #otherwise...
@@ -271,6 +271,6 @@ playahs = []
 playahs.append(RandomPlayer("Foo"))
 playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
 playahs.append(RandomPlayer("Bar"))
-game = Game(playahs)
+theGame = Game(playahs)
 
-game.play()
+theGame.play()
