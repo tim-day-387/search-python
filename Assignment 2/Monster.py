@@ -7,7 +7,14 @@ else:
     random.seed(seed)
 import abc
 
+#######
+playahs = []
+playahs.append(RandomPlayer("Foo"))
+playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
+playahs.append(RandomPlayer("Bar"))
+theGame = Game(playahs)
 
+theGame.play()
 ###################
 
 
@@ -266,11 +273,4 @@ class MctsPlayer(Player):
         pass  # This is just a placeholder, remove when real code goes here
 
 
-#######
-playahs = []
-playahs.append(RandomPlayer("Foo"))
-playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
-playahs.append(RandomPlayer("Bar"))
-theGame = Game(playahs)
 
-theGame.play()
