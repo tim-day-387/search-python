@@ -1,10 +1,11 @@
-playahs = []
-playahs.append(RandomPlayer("Foo"))
-playahs.append(RandomPlayer("Bar"))
-playahs.append(RandomPlayer("Baz"))
-game = Game(playahs)
+#commented out the lines of code that cause problems
+#playahs = []
+#playahs.append(RandomPlayer("Foo"))
+#playahs.append(RandomPlayer("Bar"))
+#playahs.append(RandomPlayer("Baz"))
+#game = Game(playahs)
 
-game.play()
+#game.play()
 
 ###################
 
