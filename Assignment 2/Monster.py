@@ -7,13 +7,6 @@ else:
     random.seed(seed)
 import abc
 
-playahs = []
-playahs.append(RandomPlayer("Foo"))
-playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
-playahs.append(RandomPlayer("Bar"))
-game = Game(playahs)
-
-game.play()
 
 ###################
 
@@ -87,7 +80,7 @@ class Game():  # Main class
         self.deck = Deck()
         self.players = players
         self.played_cards = []  # List of already played cards in this hand
-        self.yield=yieldMode #should I yield? Only use with "yieldPlayers", which are used for AI. Very important this is False otherwise
+        self.yieldM=yieldMode #should I yield? Only use with "yieldPlayers", which are used for AI. Very important this is False otherwise
         self.quiet=quietMode #setting this to true makes it not print anything.
         # some constants
         self.HAND_SIZE = 18
@@ -157,7 +150,7 @@ class Game():  # Main class
             # Form the trick, get a card from each player. Score the trick.
             for i in range(len(trick),len(self.players)): #for every loop after the first, this is the same as the old code
                 p_idx = (leader + i) % len(self.players)
-                if self.yield: #if in yield mode...
+                if self.yieldM: #if in yield mode...
                     #first, get the legal cards
                     legalCards=self.players[p_idx].playCard(trick,self) 
                     #then yield to let the game master choose a card.
@@ -273,3 +266,11 @@ class MctsPlayer(Player):
         pass  # This is just a placeholder, remove when real code goes here
 
 
+#######
+playahs = []
+playahs.append(RandomPlayer("Foo"))
+playahs.append(RandomPlayer("AI")) # Change this one for testing different AI
+playahs.append(RandomPlayer("Bar"))
+game = Game(playahs)
+
+game.play()
