@@ -109,7 +109,7 @@ class BoardA:
 def build(board, seen, start_time, sum, depth):
     seen.add(board)
 
-    if depth>25:
+    if depth>100:
         return 1
     
     if (time.time()-start_time)>60:
@@ -141,7 +141,7 @@ def build(board, seen, start_time, sum, depth):
                 elif result == -1:   
                     return -1
                 elif result == 1:
-                    sum+=25
+                    sum+=100
 
     return 1
 
